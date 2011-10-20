@@ -1,0 +1,6 @@
+# Compiled source #
+###################
+*.beam
+ebin/scraper.boot
+ebin/scraper.script
+
