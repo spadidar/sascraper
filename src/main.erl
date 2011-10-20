@@ -5,7 +5,8 @@
 start(_Type, _Args) ->
     http_utilities:start_inet(),
     http_utilities:get("www.sieson.com"),
-    http_utilities:print("sasan").
+    http_utilities:print("sasan"),
+    halt().
 stop(_State) ->
     ok.
     

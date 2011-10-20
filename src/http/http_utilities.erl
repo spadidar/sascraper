@@ -2,7 +2,8 @@
 
 -export([start_inet/0,
 	 get/1,
-	 prepare_url/1]).
+	 prepare_url/1,
+	 print/1]).
 
 start_inet()->
     case inets:services_info() of
