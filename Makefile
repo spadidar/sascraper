@@ -23,7 +23,7 @@ make_boot:
 	(cd ebin; erl -pa ebin -noshell -run make_boot write_scripts scraper)
 
 start_all:
-	(cd ebin; erl -pa ebin -noshell -sname test_app -boot scraper)
+	(cd ebin; erl -pa ebin -noshell -sname scraper -boot scraper)
 
 ebin:
 	@mkdir ebin
