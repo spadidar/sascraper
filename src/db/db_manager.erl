@@ -1,10 +1,7 @@
 -module(db_manager).
+-include("include/settings.hrl").
 
 connect() ->
-    Host = "localhost",
-    Port = 5984,
-    Prefix = "",
-    UserName = "admin", 
-    Password = "sasan",
-    Options = [{basic_auth, {UserName, Password}}],
-    Server = couchbeam:server_connection(Host, Port, Prefix, Options),
+    Options = [{basic_auth, {#db_creds.user_name, #db_creds.password}}],
+    http_utilities:print(#db_creds.host),
+    Server = couchbeam:server_connection(#db_creds.host, #db_creds.port, #db_creds.prefix, Options).

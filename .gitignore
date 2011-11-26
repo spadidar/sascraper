@@ -6,3 +6,4 @@ ebin/scraper.script
 *~
 ebin/*.beam
 *.beam
+ebin/*.dump

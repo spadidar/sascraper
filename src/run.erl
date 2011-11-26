@@ -5,10 +5,7 @@ run_app() ->
     application:start(sasl),
     application:start(ibrowse),
     application:start(couchbeam),
-    couchbeam:open_db(Server, "testdb", Options),
-    couchbeam:server_info(Server),
-    couchbeam:create_db(Server, "testdb", Options).
-
+    db_manager:connect(),
     %% http_utilities:start_inet(),
     %% http_utilities:print(http_utilities:get("www.sieson.com")),
     halt().
