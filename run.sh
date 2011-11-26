@@ -1,2 +1,2 @@
 cd ebin
-erl -pa ebin -noshell -run run run_app
+erl -pa `pwd`/ebin `pwd`/deps/*/ebin -noshell -run run run_app

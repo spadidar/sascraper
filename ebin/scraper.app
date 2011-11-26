@@ -6,7 +6,7 @@
 	    http_utilities	
         ]},	
   {registered, []},
-  {applications, [kernel, stdlib]},
+  {applications, [kernel, stdlib, sasl, ibrowse, couchbeam]},
   {env, []},
 
   %% Application Start point

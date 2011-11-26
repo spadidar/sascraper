@@ -3,4 +3,6 @@
 *.beam
 ebin/scraper.boot
 ebin/scraper.script
-
+*~
+ebin/*.beam
+*.beam
