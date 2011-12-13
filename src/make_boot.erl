@@ -6,6 +6,11 @@ write_scripts(Args) ->
     io:format("write_scripts for ~p~n", [Name]),
     Erts = erlang:system_info(version),
     application:load(sasl),
+
+    %% application:start(sasl),
+    %% application:start(ibrowse),
+    %% application:start(couchbeam),
+
     Version = "0.1",
     {value, {kernel, _, Kernel}} = lists:keysearch(kernel, 1,
 						   application:loaded_applications()),
@@ -13,7 +18,7 @@ write_scripts(Args) ->
 						   application:loaded_applications()),
     {value, {sasl, _, Sasl}} = lists:keysearch(sasl, 1,
 					       application:loaded_applications()),
-    
+  
     Rel = "{release, {\"~s\", \"~s\"}, {erts, \"~s\"}, ["
 	"{kernel, \"~s\"}, {stdlib, \"~s\"}, {sasl, \"~s\"}, {~s, \"~s\"}]}.",
     Lowername = string:to_lower(Name),

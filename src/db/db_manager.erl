@@ -1,7 +1,11 @@
 -module(db_manager).
 -include("include/settings.hrl").
 
+-export([connect/0
+	]).
+
 connect() ->
-    Options = [{basic_auth, {#db_creds.user_name, #db_creds.password}}],
-    http_utilities:print(#db_creds.host),
-    Server = couchbeam:server_connection(#db_creds.host, #db_creds.port, #db_creds.prefix, Options).
+    Creds = #db_creds{},
+    Options = [{basic_auth, {Creds#db_creds.user_name, Creds#db_creds.password}}],
+    Server = couchbeam:server_connection(Creds#db_creds.host, Creds#db_creds.port, Creds#db_creds.prefix, Options),
+    Server.

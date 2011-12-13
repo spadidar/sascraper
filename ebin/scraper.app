@@ -3,7 +3,8 @@
   {vsn, "0.1"},
   {modules, [
 	    main, 
-	    http_utilities	
+	    http_utilities,
+	    db_manager	
         ]},	
   {registered, []},
   {applications, [kernel, stdlib, sasl, ibrowse, couchbeam]},
