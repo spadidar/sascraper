@@ -1,0 +1,12 @@
+{application,couchbeam,
+             [{description,"Erlang CouchDB kit"},
+              {vsn,"0.7.1"},
+              {modules,[couchbeam,couchbeam_app,couchbeam_attachments,
+                        couchbeam_changes,couchbeam_deps,couchbeam_doc,
+                        couchbeam_httpc,couchbeam_json_stream,
+                        couchbeam_oldview,couchbeam_sup,couchbeam_util,
+                        couchbeam_view,gen_changes]},
+              {registered,[]},
+              {applications,[kernel,stdlib,crypto,sasl,ibrowse]},
+              {env,[]},
+              {mod,{couchbeam_app,[]}}]}.
