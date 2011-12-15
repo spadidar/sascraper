@@ -9,3 +9,7 @@ connect() ->
     Options = [{basic_auth, {Creds#db_creds.user_name, Creds#db_creds.password}}],
     Server = couchbeam:server_connection(Creds#db_creds.host, Creds#db_creds.port, Creds#db_creds.prefix, Options),
     Server.
+
+create_db(Name, Server) ->
+    couchbeam:create_db(Server, Name, [], []),
+    ok.
