@@ -1,7 +1,8 @@
 -module(db_manager).
 -include("include/settings.hrl").
 
--export([connect/0
+-export([connect/0,
+	 create_db/2
 	]).
 
 connect() ->
@@ -11,5 +12,8 @@ connect() ->
     Server.
 
 create_db(Name, Server) ->
-    couchbeam:create_db(Server, Name, [], []),
-    ok.
+    case couchbeam:create_db(Server, Name, [], []) of
+	{ok, _Status, _Headers, _Body} -> ok;
+	{error, {ok, "412", _, _}} -> error;
+	Error -> Error
+    end.
