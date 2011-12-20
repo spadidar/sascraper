@@ -24,7 +24,7 @@ start_apps([App|Rest]) ->
 
 %% @doc Start the main process. Useful when testing using the shell. 
 start(_Type, _Args) ->
-    case start_apps([crypto, sasl, ssl, ibrowse]) of
+    case start_apps([crypto, sasl, ssl, ibrowse, couchbeam]) of
         ok ->
 	    ok;
         Error ->
