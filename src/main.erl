@@ -1,6 +1,10 @@
 -module(main).
 -behavior(application).
--export([start/2, stop/1]).
+-export([start/2, 
+	 stop/1,
+	 start_apps/1,
+	 version/0
+	]).
 
 
 start_apps([]) ->
@@ -8,7 +12,7 @@ start_apps([]) ->
 start_apps([App|Rest]) ->
     case application:start(App) of
 	ok ->
-       start_apps(Rest);
+	    start_apps(Rest);
 	{error, {already_started, App}} ->
 	    start_apps(Rest);
 	{error, _Reason} when App =:= public_key ->
@@ -28,7 +32,7 @@ start(_Type, _Args) ->
     end.
 
 %% @doc Stop the process. Useful when testing using the shell. 
-stop() ->
+stop(_State) ->
     application:stop(couchbeam),
     application:stop(ibrowse),
     application:stop(crypto).
