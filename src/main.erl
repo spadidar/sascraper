@@ -3,6 +3,7 @@
 -export([start/2, 
 	 stop/1,
 	 start_apps/1,
+	 stop_apps/1,
 	 version/0
 	]).
 
@@ -22,9 +23,34 @@ start_apps([App|Rest]) ->
     end.
 
 
+stop_apps([]) ->
+    ok;
+stop_apps([App|Rest]) ->
+    case application:stop(App) of
+	ok ->
+	    stop_apps(Rest);
+	{error, {already_started, App}} ->
+	    stop_apps(Rest);
+	{error, _Reason} when App =:= public_key ->
+	    stop_apps(Rest);
+	{error, _Reason} ->
+	    {error, {app_would_not_start, App}}
+    end.
+
 %% @doc Start the main process. Useful when testing using the shell. 
 start(_Type, _Args) ->
-    case start_apps([crypto, sasl, ssl, ibrowse, couchbeam]) of
+    case start_apps([crypto, 
+		     sasl, 
+		     public_key, 
+		     ssl, 
+		     inets, 
+		     ibrowse,
+		     couchbeam,
+		     lhttpc,
+		     xmerl,
+		     compiler,
+		     syntax_tools,
+		     mochiweb]) of
         ok ->
 	    ok;
         Error ->
@@ -33,9 +59,23 @@ start(_Type, _Args) ->
 
 %% @doc Stop the process. Useful when testing using the shell. 
 stop(_State) ->
-    application:stop(couchbeam),
-    application:stop(ibrowse),
-    application:stop(crypto).
+    case stop_apps([crypto, 
+		    sasl, 
+		    public_key, 
+		    ssl, 
+		    inets, 
+		    ibrowse,
+		    couchbeam,
+		    lhttpc,
+		    xmerl,
+		    compiler,
+		    syntax_tools,
+		    mochiweb]) of
+        ok ->
+	    ok;
+        Error ->
+            Error
+    end.
 
 
 %% @spec () -> Version
