@@ -4,6 +4,7 @@
 ]).
 
 download(URL) ->
-    html = http_utils:get(URL),
-    http_utils:parse_response(html).
+    Html = http_utils:get(URL),
+    HtmlBitString = element(3, Html),
+    http_utils:parse_response(HtmlBitString).
     
