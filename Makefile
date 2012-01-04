@@ -7,9 +7,12 @@ EBIN		= ebin
 CFLAGS  	= -I include -pa $(EBIN)
 COMPILE		= $(CC) $(CFLAGS) -o $(EBIN)
 EBIN_DIRS = $(wildcard deps/*/ebin)
+DEPS = deps
 
 all: ebin compile
+
 all_boot: all make_boot
+
 start: all start_all
 
 compile:
@@ -30,3 +33,20 @@ ebin:
 
 clean:
 	rm -rf ebin/*.beam ebin/erl_crash.dump erl_crash.dump ebin/*.boot ebin/*.rel ebin/*.script doc/*.html doc/*.css doc/erlang.png doc/edoc-info
+
+get_deps: remove_deps
+	@mkdir $(DEPS)
+	git clone https://github.com/benoitc/couchbeam.git $(DEPS)/couchbeam
+	git clone https://github.com/cmullaparthi/ibrowse.git $(DEPS)/ibrowse
+	git clone https://github.com/mochi/mochiweb.git $(DEPS)/mochiweb
+	git clone https://github.com/tim/erlang-oauth $(DEPS)/oauth
+	git clone https://github.com/benoitc/ejson.git $(DEPS)/ejson
+	hg clone https://bitbucket.org/etc/lhttpc $(DEPS)/lhttpc
+
+remove_deps:
+	rm -rf $(DEPS)
+
+build_deps:
+	#chmod a+x $(DEPS)/couchbeam/rebar
+	make $(DEPS)/couchbeam/Makefile
+
