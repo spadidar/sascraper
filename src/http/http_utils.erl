@@ -26,8 +26,8 @@ prepare_url(URL) ->
 	match -> URL
     end.
 
-parse_response(Html) ->
-    mochiweb_html:parse(Html).
+parse_response(Response) ->
+    mochiweb_html:parse(element(3, Response)).
 		
 
 print(String) ->
