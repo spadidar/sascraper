@@ -70,9 +70,12 @@ build_deps:
 	echo "Building mochiweb"
 	cd $(DEPS)/mochiweb; make
 
-	echo "Building ejson"
-	cd $(DEPS)/ejson/; make
+	echo "Building mochiweb"
+	cd $(DEPS)/ibrowse; make
 
 	echo "Building oauth"
 	cd $(DEPS)/oauth; make
+
+	echo "Building ejson"
+	cd $(DEPS)/ejson/; make
 
