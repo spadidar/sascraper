@@ -52,6 +52,8 @@ remove_deps:
 build_deps:
 	echo "Building Rebar"
 	cd $(DEPS)/rebar; make
+
+	echo "Copying rebar to dependencies"
 	cp $(DEPS)/rebar/rebar $(DEPS)/couchbeam
 	cp $(DEPS)/rebar/rebar $(DEPS)/ibrowse
 	cp $(DEPS)/rebar/rebar $(DEPS)/lhttpc
