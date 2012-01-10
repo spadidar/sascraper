@@ -56,10 +56,10 @@ build_deps:
 	echo "Copying rebar to dependencies"
 	cp $(DEPS)/rebar/rebar $(DEPS)/couchbeam
 	cp $(DEPS)/rebar/rebar $(DEPS)/ibrowse
-	cp $(DEPS)/rebar/rebar $(DEPS)/lhttpc
 	cp $(DEPS)/rebar/rebar $(DEPS)/ejson
 	cp $(DEPS)/rebar/rebar $(DEPS)/oauth
 	cp $(DEPS)/rebar/rebar $(DEPS)/mochiweb
+	# cp $(DEPS)/rebar/rebar $(DEPS)/lhttpc does not use rebar
 
 	echo "Building CouchBeam"
 	cd $(DEPS)/couchbeam/; make
