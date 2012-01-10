@@ -11,6 +11,8 @@ DEPS = deps
 
 all: ebin compile
 
+build: remove_deps get_deps build_deps ebin compile
+
 all_boot: all make_boot
 
 start: all start_all
@@ -36,6 +38,7 @@ clean:
 
 get_deps: remove_deps
 	@mkdir $(DEPS)
+	git clone git://github.com/basho/rebar.git $(DEPS)/rebar
 	git clone https://github.com/benoitc/couchbeam.git $(DEPS)/couchbeam
 	git clone https://github.com/cmullaparthi/ibrowse.git $(DEPS)/ibrowse
 	git clone https://github.com/mochi/mochiweb.git $(DEPS)/mochiweb
@@ -47,6 +50,27 @@ remove_deps:
 	rm -rf $(DEPS)
 
 build_deps:
-	#chmod a+x $(DEPS)/couchbeam/rebar
-	make $(DEPS)/couchbeam/Makefile
+	echo "Building Rebar"
+	cd $(DEPS)/rebar; make
+	cp $(DEPS)/rebar/rebar $(DEPS)/couchbeam
+	cp $(DEPS)/rebar/rebar $(DEPS)/ibrowse
+	cp $(DEPS)/rebar/rebar $(DEPS)/lhttpc
+	cp $(DEPS)/rebar/rebar $(DEPS)/ejson
+	cp $(DEPS)/rebar/rebar $(DEPS)/oauth
+	cp $(DEPS)/rebar/rebar $(DEPS)/mochiweb
+
+	echo "Building CouchBeam"
+	cd $(DEPS)/couchbeam/; make
+
+	echo "Building lhttpc"
+	cd $(DEPS)/lhttpc; make
+
+	echo "Building mochiweb"
+	cd $(DEPS)/mochiweb; make
+
+	echo "Building ejson"
+	cd $(DEPS)/ejson/; make
+
+	echo "Building oauth"
+	cd $(DEPS)/oauth; make
 

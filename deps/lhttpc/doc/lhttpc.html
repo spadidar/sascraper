@@ -23,7 +23,7 @@
 
 
 <h3 class="typedecl"><a name="type-iolist">iolist()</a></h3>
-<p><tt>iolist() = [] | binary() | [char() | binary() | iolist()]</tt></p>
+<p><tt>iolist() = [] | binary() | [char() | binary() | <a href="#type-iolist">iolist()</a>]</tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -55,7 +55,12 @@
 <h3 class="function"><a name="get_body_part-1">get_body_part/1</a></h3>
 <div class="spec">
 <p><tt>get_body_part(HTTPClient::pid()) -&gt; Result</tt>
-<ul class="definitions"><li><tt>Result = {ok, BodyPart} | {ok, {http_eob, Trailers}}</tt></li><li><tt>BodyPart = binary()</tt></li><li><tt>Trailers = [{Header, Value}]</tt></li><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li></ul></p>
+<ul class="definitions"><li><tt>Result = {ok, BodyPart} | {ok, {http_eob, Trailers}}</tt></li>
+<li><tt>BodyPart = binary()</tt></li>
+<li><tt>Trailers = [{Header, Value}]</tt></li>
+<li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+</ul></p>
 </div><p>Reads a body part from an ongoing response when
   <code>{partial_download, PartialDownloadOptions}</code> is used. The default timeout,
   <code>infinity</code> will be used.
@@ -65,7 +70,13 @@
 <h3 class="function"><a name="get_body_part-2">get_body_part/2</a></h3>
 <div class="spec">
 <p><tt>get_body_part(HTTPClient::pid(), Timeout) -&gt; Result</tt>
-<ul class="definitions"><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Result = {ok, BodyPart} | {ok, {http_eob, Trailers}}</tt></li><li><tt>BodyPart = binary()</tt></li><li><tt>Trailers = [{Header, Value}]</tt></li><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li></ul></p>
+<ul class="definitions"><li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Result = {ok, BodyPart} | {ok, {http_eob, Trailers}}</tt></li>
+<li><tt>BodyPart = binary()</tt></li>
+<li><tt>Trailers = [{Header, Value}]</tt></li>
+<li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+</ul></p>
 </div><p>Reads a body part from an ongoing response when
   <code>{partial_download, PartialDownloadOptions}</code> is used.
   <code>Timeout</code> is the timeout for reading the next body part in milliseconds.
@@ -75,7 +86,18 @@
 <h3 class="function"><a name="request-4">request/4</a></h3>
 <div class="spec">
 <p><tt>request(URL, Method, Hdrs, Timeout) -&gt; Result</tt>
-<ul class="definitions"><li><tt>URL = string()</tt></li><li><tt>Method = string() | atom()</tt></li><li><tt>Hdrs = [{Header, Value}]</tt></li><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li><li><tt>StatusCode = integer()</tt></li><li><tt>ReasonPhrase = string()</tt></li><li><tt>ResponseBody = binary()</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>URL = string()</tt></li>
+<li><tt>Method = string() | atom()</tt></li>
+<li><tt>Hdrs = [{Header, Value}]</tt></li>
+<li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+<li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li>
+<li><tt>StatusCode = integer()</tt></li>
+<li><tt>ReasonPhrase = string()</tt></li>
+<li><tt>ResponseBody = binary()</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p>Sends a request without a body.
   Would be the same as calling <code>request(URL, Method, Hdrs, [], Timeout)</code>,
   that is <a href="#request-5"><code>request/5</code></a> with an empty body (<code>Body</code> could also be <code>&lt;&lt;&gt;&gt;</code>).</p>
@@ -84,7 +106,19 @@
 <h3 class="function"><a name="request-5">request/5</a></h3>
 <div class="spec">
 <p><tt>request(URL, Method, Hdrs, Body::RequestBody, Timeout) -&gt; Result</tt>
-<ul class="definitions"><li><tt>URL = string()</tt></li><li><tt>Method = string() | atom()</tt></li><li><tt>Hdrs = [{Header, Value}]</tt></li><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li><li><tt>RequestBody = iolist()</tt></li><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li><li><tt>StatusCode = integer()</tt></li><li><tt>ReasonPhrase = string()</tt></li><li><tt>ResponseBody = binary()</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>URL = string()</tt></li>
+<li><tt>Method = string() | atom()</tt></li>
+<li><tt>Hdrs = [{Header, Value}]</tt></li>
+<li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+<li><tt>RequestBody = <a href="#type-iolist">iolist()</a></tt></li>
+<li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li>
+<li><tt>StatusCode = integer()</tt></li>
+<li><tt>ReasonPhrase = string()</tt></li>
+<li><tt>ResponseBody = binary()</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p>Sends a request with a body.
   Would be the same as calling
   <code>request(URL, Method, Hdrs, Body, Timeout, [])</code>, that is <a href="#request-6"><code>request/6</code></a>
@@ -94,7 +128,27 @@
 <h3 class="function"><a name="request-6">request/6</a></h3>
 <div class="spec">
 <p><tt>request(URL, Method, Hdrs, Body::RequestBody, Timeout, Options) -&gt; Result</tt>
-<ul class="definitions"><li><tt>URL = string()</tt></li><li><tt>Method = string() | atom()</tt></li><li><tt>Hdrs = [{Header, Value}]</tt></li><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li><li><tt>RequestBody = iolist()</tt></li><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Options = [Option]</tt></li><li><tt>Option = {connect_timeout, Milliseconds | infinity} | {connect_options, [ConnectOptions]} | {send_retry, integer()} | {partial_upload, WindowSize} | {partial_download, PartialDownloadOptions}</tt></li><li><tt>Milliseconds = integer()</tt></li><li><tt>ConnectOptions = term()</tt></li><li><tt>WindowSize = integer() | infinity</tt></li><li><tt>PartialDownloadOptions = [PartialDownloadOption]</tt></li><li><tt>PartialDowloadOption = {window_size, WindowSize} | {part_size, PartSize}</tt></li><li><tt>PartSize = integer() | infinity</tt></li><li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {ok, UploadState} | {error, Reason}</tt></li><li><tt>StatusCode = integer()</tt></li><li><tt>ReasonPhrase = string()</tt></li><li><tt>ResponseBody = binary()</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>URL = string()</tt></li>
+<li><tt>Method = string() | atom()</tt></li>
+<li><tt>Hdrs = [{Header, Value}]</tt></li>
+<li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+<li><tt>RequestBody = <a href="#type-iolist">iolist()</a></tt></li>
+<li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Options = [Option]</tt></li>
+<li><tt>Option = {connect_timeout, Milliseconds | infinity} | {connect_options, [ConnectOptions]} | {send_retry, integer()} | {partial_upload, WindowSize} | {partial_download, PartialDownloadOptions}</tt></li>
+<li><tt>Milliseconds = integer()</tt></li>
+<li><tt>ConnectOptions = term()</tt></li>
+<li><tt>WindowSize = integer() | infinity</tt></li>
+<li><tt>PartialDownloadOptions = [PartialDownloadOption]</tt></li>
+<li><tt>PartialDowloadOption = {window_size, WindowSize} | {part_size, PartSize}</tt></li>
+<li><tt>PartSize = integer() | infinity</tt></li>
+<li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {ok, UploadState} | {error, Reason}</tt></li>
+<li><tt>StatusCode = integer()</tt></li>
+<li><tt>ReasonPhrase = string()</tt></li>
+<li><tt>ResponseBody = binary()</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p>Sends a request with a body.
   Would be the same as calling <pre>
   {Host, Port, Path, Ssl} = lhttpc_lib:parse_url(URL),
@@ -108,7 +162,29 @@
 <h3 class="function"><a name="request-9">request/9</a></h3>
 <div class="spec">
 <p><tt>request(Host, Port, Ssl, Path, Method, Hdrs, Body::RequestBody, Timeout, Options) -&gt; Result</tt>
-<ul class="definitions"><li><tt>Host = string()</tt></li><li><tt>Port = integer()</tt></li><li><tt>Ssl = boolean()</tt></li><li><tt>Path = string()</tt></li><li><tt>Method = string() | atom()</tt></li><li><tt>Hdrs = [{Header, Value}]</tt></li><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li><li><tt>RequestBody = iolist()</tt></li><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Options = [Option]</tt></li><li><tt>Option = {connect_timeout, Milliseconds | infinity} | {connect_options, [ConnectOptions]} | {send_retry, integer()} | {partial_upload, WindowSize} | {partial_download, PartialDownloadOptions}</tt></li><li><tt>Milliseconds = integer()</tt></li><li><tt>WindowSize = integer()</tt></li><li><tt>PartialDownloadOptions = [PartialDownloadOption]</tt></li><li><tt>PartialDowloadOption = {window_size, WindowSize} | {part_size, PartSize}</tt></li><li><tt>PartSize = integer() | infinity</tt></li><li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li><li><tt>StatusCode = integer()</tt></li><li><tt>ReasonPhrase = string()</tt></li><li><tt>ResponseBody = binary() | pid() | undefined</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>Host = string()</tt></li>
+<li><tt>Port = integer()</tt></li>
+<li><tt>Ssl = <a href="#type-boolean">boolean()</a></tt></li>
+<li><tt>Path = string()</tt></li>
+<li><tt>Method = string() | atom()</tt></li>
+<li><tt>Hdrs = [{Header, Value}]</tt></li>
+<li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+<li><tt>RequestBody = <a href="#type-iolist">iolist()</a></tt></li>
+<li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Options = [Option]</tt></li>
+<li><tt>Option = {connect_timeout, Milliseconds | infinity} | {connect_options, [ConnectOptions]} | {send_retry, integer()} | {partial_upload, WindowSize} | {partial_download, PartialDownloadOptions}</tt></li>
+<li><tt>Milliseconds = integer()</tt></li>
+<li><tt>WindowSize = integer()</tt></li>
+<li><tt>PartialDownloadOptions = [PartialDownloadOption]</tt></li>
+<li><tt>PartialDowloadOption = {window_size, WindowSize} | {part_size, PartSize}</tt></li>
+<li><tt>PartSize = integer() | infinity</tt></li>
+<li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li>
+<li><tt>StatusCode = integer()</tt></li>
+<li><tt>ReasonPhrase = string()</tt></li>
+<li><tt>ResponseBody = binary() | pid() | undefined</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p><p>Sends a request with a body.</p>
  
   <p>Instead of building and parsing URLs the target server is specified with
@@ -202,7 +278,11 @@ when the request is started.</p>
 <h3 class="function"><a name="send_body_part-2">send_body_part/2</a></h3>
 <div class="spec">
 <p><tt>send_body_part(UploadState, BodyPart) -&gt; Result</tt>
-<ul class="definitions"><li><tt>BodyPart = iolist() | binary()</tt></li><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Result = {error, Reason} | UploadState</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>BodyPart = <a href="#type-iolist">iolist()</a> | binary()</tt></li>
+<li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Result = {error, Reason} | UploadState</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p>Sends a body part to an ongoing request when
   <code>{partial_upload, WindowSize}</code> is used. The default timeout, <code>infinity</code>
   will be used. Notice that if <code>WindowSize</code> is infinity, this call will never
@@ -213,7 +293,11 @@ when the request is started.</p>
 <h3 class="function"><a name="send_body_part-3">send_body_part/3</a></h3>
 <div class="spec">
 <p><tt>send_body_part(UploadState, BodyPart, Timeout) -&gt; Result</tt>
-<ul class="definitions"><li><tt>BodyPart = iolist() | binary()</tt></li><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Result = {error, Reason} | UploadState</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>BodyPart = <a href="#type-iolist">iolist()</a> | binary()</tt></li>
+<li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Result = {error, Reason} | UploadState</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p><p>Sends a body part to an ongoing request when
   <code>{partial_upload, WindowSize}</code> is used.
   <code>Timeout</code> is the timeout for the request in milliseconds.</p>
@@ -233,7 +317,11 @@ immediately after sending the body part to the request handling process.</p>
 <h3 class="function"><a name="send_trailers-2">send_trailers/2</a></h3>
 <div class="spec">
 <p><tt>send_trailers(UploadState, Trailers) -&gt; Result</tt>
-<ul class="definitions"><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li><li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+<li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p>Sends trailers to an ongoing request when <code>{partial_upload,
   WindowSize}</code> is used and no <code>Content-Length</code> was specified. The default
   timout <code>infinity</code> will be used. Note that after this the request is
@@ -244,7 +332,13 @@ immediately after sending the body part to the request handling process.</p>
 <h3 class="function"><a name="send_trailers-3">send_trailers/3</a></h3>
 <div class="spec">
 <p><tt>send_trailers(UploadState, Trailers, Timeout) -&gt; Result</tt>
-<ul class="definitions"><li><tt>Trailers = [{Header, Value}]</tt></li><li><tt>Header = string() | binary() | atom()</tt></li><li><tt>Value = string() | binary()</tt></li><li><tt>Timeout = integer() | infinity</tt></li><li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li><li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li></ul></p>
+<ul class="definitions"><li><tt>Trailers = [{Header, Value}]</tt></li>
+<li><tt>Header = string() | binary() | atom()</tt></li>
+<li><tt>Value = string() | binary()</tt></li>
+<li><tt>Timeout = integer() | infinity</tt></li>
+<li><tt>Result = {ok, {{StatusCode, ReasonPhrase}, Hdrs, ResponseBody}} | {error, Reason}</tt></li>
+<li><tt>Reason = connection_closed | connect_timeout | timeout</tt></li>
+</ul></p>
 </div><p><p>Sends trailers to an ongoing request when
   <code>{partial_upload, WindowSize}</code> is used and no <code>Content-Length</code> was
   specified.
@@ -260,7 +354,8 @@ response in milliseconds.</p>
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
 <p><tt>start() -&gt; ok | {error, Reason}</tt>
-<ul class="definitions"><li><tt>Reason = term()</tt></li></ul></p>
+<ul class="definitions"><li><tt>Reason = term()</tt></li>
+</ul></p>
 </div><p><p>
   Start the application.
   This is a helper function that will call <code>application:start(lhttpc)</code> to
@@ -273,7 +368,8 @@ response in milliseconds.</p>
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
 <p><tt>stop() -&gt; ok | {error, Reason}</tt>
-<ul class="definitions"><li><tt>Reason = term()</tt></li></ul></p>
+<ul class="definitions"><li><tt>Reason = term()</tt></li>
+</ul></p>
 </div><p><p>
   Stops the application.
   This is a helper function that will call <code>application:stop(lhttpc)</code>.</p>
@@ -282,6 +378,6 @@ response in milliseconds.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
-<p><i>Generated by EDoc, Dec 31 2011, 09:46:52.</i></p>
+<p><i>Generated by EDoc, Jan 9 2012, 16:20:16.</i></p>
 </body>
 </html>

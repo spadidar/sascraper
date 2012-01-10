@@ -40,16 +40,16 @@ stop_apps([App|Rest]) ->
 %% @doc Start the main process. Useful when testing using the shell. 
 start(_Type, _Args) ->
     case start_apps([crypto, 
-		     sasl, 
 		     public_key, 
 		     ssl, 
+		     sasl, 
 		     inets, 
-		     ibrowse,
-		     couchbeam,
 		     lhttpc,
 		     xmerl,
 		     compiler,
 		     syntax_tools,
+		     ibrowse,
+		     couchbeam,
 		     mochiweb]) of
         ok ->
 	    ok;

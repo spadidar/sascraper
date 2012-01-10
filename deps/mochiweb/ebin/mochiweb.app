@@ -1,6 +1,6 @@
 {application,mochiweb,
              [{description,"MochiMedia Web Server"},
-              {vsn,"2.3.0"},
+              {vsn,"2.3.1"},
               {modules,[mochifmt,mochifmt_records,mochifmt_std,mochiglobal,
                         mochihex,mochijson,mochijson2,mochilists,
                         mochilogfile2,mochinum,mochitemp,mochiutf8,mochiweb,

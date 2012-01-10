@@ -10,21 +10,42 @@ Quick start (client usage):
   ...
   2> RequestTokenURL = "http://term.ie/oauth/example/request_token.php".
   ...
-  3> {ok, ResponseR} = oauth:get(RequestTokenURL, [], Consumer, "", "").
+  3> {ok, RequestTokenResponse} = oauth:get(RequestTokenURL, [], Consumer).
   ...
-  4> ParamsR = oauth_http:response_params(ResponseR).
+  4> RequestTokenParams = oauth:params_decode(RequestTokenResponse).
   ...
-  5> TokenR = oauth:token(ParamsR).
+  5> RequestToken = oauth:token(RequestTokenParams).
   ...
-  6> TokenSecretR = oauth:token_secret(ParamsR).
+  6> RequestTokenSecret = oauth:token_secret(RequestTokenParams).
   ...
   7> AccessTokenURL = "http://term.ie/oauth/example/access_token.php".
   ...
-  8> {ok, ResponseA} = oauth:get(AccessTokenURL, [], Consumer, TokenR, TokenSecretR).
+  8> {ok, AccessTokenResponse} = oauth:get(AccessTokenURL, [], Consumer, RequestToken, RequestTokenSecret).
+  ...
+  9> AccessTokenParams = oauth:params_decode(AccessTokenResponse).
+  ...
+  10> AccessToken = oauth:token(AccessTokenParams).
+  ...
+  11> AccessTokenSecret = oauth:token_secret(AccessTokenParams).
+  ...
+  12> URL = "http://term.ie/oauth/example/echo_api.php".
+  ...
+  13> {ok, Response} = oauth:get(URL, [{"hello", "world"}], Consumer, AccessToken, AccessTokenSecret).
+  ...
+  14> oauth:params_decode(Response).
   ...
 
 
-Thanks to Jason Davies, Paul Bonser, and Roberto Aloi for their patches.
+Consumer credentials are represented as follows:
+
+  {Key::string(), Secret::string(), plaintext}
+
+  {Key::string(), Secret::string(), hmac_sha1}
+
+  {Key::string(), RSAPrivateKeyPath::string(), rsa_sha1}  % client side
+
+  {Key::string(), RSACertificatePath::string(), rsa_sha1}  % server side
+
 
 The percent encoding/decoding implementations are based on those found in
 the ibrowse library, written by Chandrashekhar Mullaparthi.
@@ -33,4 +54,4 @@ Example client/server code is at http://github.com/tim/erlang-oauth-examples.
 
 Unit tests are at http://github.com/tim/erlang-oauth-tests.
 
-Erlang R12B-5 or greater is required for RSA-SHA1.
+Erlang/OTP R14B or greater is required for RSA-SHA1.

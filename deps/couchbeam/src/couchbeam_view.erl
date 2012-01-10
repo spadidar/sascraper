@@ -1,11 +1,10 @@
 %%% -*- erlang -*-
 %%%
-%%% This file is part of couchbeam released under the MIT license. 
+%%% This file is part of couchbeam released under the MIT license.
 %%% See the NOTICE for more information.
 
 -module(couchbeam_view).
 -author('Benoît Chesneau <benoitc@e-engura.org>').
-
 
 -include("couchbeam.hrl").
 
@@ -24,7 +23,7 @@
 all(Db) ->
     fetch(Db, 'all_docs', []).
 
--spec all(Db::db(), Options::view_options()) 
+-spec all(Db::db(), Options::view_options())
         -> {ok, Rows::list(ejson_object())} | {error, term()}.
 %% @doc fetch all docs
 %% @equiv fetch(Db, 'all_docs', Options)
@@ -37,7 +36,7 @@ fetch(Db) ->
     fetch(Db, 'all_docs', []).
 
 -spec fetch(Db::db(), ViewName::'all_docs' | {DesignName::string(),
-        ViewName::string()}) 
+        ViewName::string()})
     -> {ok, Rows::list(ejson_object())} | {error, term()}.
 %% @equiv fetch(Db, ViewName, [])
 fetch(Db, ViewName) ->
@@ -45,21 +44,21 @@ fetch(Db, ViewName) ->
 
 
 -spec fetch(Db::db(), ViewName::'all_docs' | {DesignName::string(),
-        ViewName::string()}, Options::view_options()) 
+        ViewName::string()}, Options::view_options())
      -> {ok, Rows::list(ejson_object())} | {error, term()}.
 %% @doc Collect view results
 %%  <p>Db: a db record</p>
-%%  <p>ViewName: 'all_docs' to get all docs or {DesignName,
-%%  ViewName}</p>
-%%  <p>Options :: view_options() [{key, binary()} | {start_docid, binary()}
+%%  <p>ViewName: <code>'all_docs'</code> to get all docs or <code>{DesignName,
+%%  ViewName}</code></p>
+%%  <pre>Options :: view_options() [{key, binary()} | {start_docid, binary()}
 %%    | {end_docid, binary()} | {start_key, binary()}
 %%    | {end_key, binary()} | {limit, integer()}
 %%    | {stale, stale()}
 %%    | descending
 %%    | {skip, integer()}
 %%    | group | {group_level, integer()}
-%%    | inclusive_end | {reduce, boolean()} | reduce | include_docs | conflicts
-%%    | {keys, list(binary())}</p>
+%%    | {inclusive_end, boolean()} | {reduce, boolean()} | reduce | include_docs | conflicts
+%%    | {keys, list(binary())}</pre>
 %% <p>See {@link couchbeam_view:stream/4} for more information about
 %% options.</p>
 %% <p>Return: {ok, Rows} or {error, Rows, Error}</p>
@@ -87,7 +86,7 @@ stream(Db, ViewName, Client) ->
     stream(Db, ViewName, Client, []).
 
 -spec stream(Db::db(), ViewName::'all_docs' | {DesignName::string(),
-        ViewName::string()}, Client::pid(), Options::view_options()) 
+        ViewName::string()}, Client::pid(), Options::view_options())
     -> {ok, StartRef::term(), ViewPid::pid()} | {error, term()}.
 %% @doc stream view results to a pid
 %%  <p>Db: a db record</p>
@@ -103,46 +102,47 @@ stream(Db, ViewName, Client) ->
 %%          <dd>Got an error, connection is closed when an error
 %%          happend.</dd>
 %%  </dl></p>
-%%  <p>Options :: view_options() [{key, binary()} | {start_docid, binary()}
+%%  <p><pre>Options :: view_options() [{key, binary()} | {start_docid, binary()}
 %%    | {end_docid, binary()} | {start_key, binary()}
 %%    | {end_key, binary()} | {limit, integer()}
 %%    | {stale, stale()}
 %%    | descending
 %%    | {skip, integer()}
 %%    | group | {group_level, integer()}
-%%    | inclusive_end | {reduce, boolean()} | reduce | include_docs | conflicts
-%%    | {keys, list(binary())}
+%%    | {inclusive_end, boolean()} | {reduce, boolean()} | reduce | include_docs | conflicts
+%%    | {keys, list(binary())}</pre>
 %%
 %%  <ul>
-%%      <li>{key, Key}: key value</li>
-%%      <li>{start_docid, DocId}: document id to start with (to allow pagination
+%%      <li><code>{key, Key}</code>: key value</li>
+%%      <li><code>{start_docid, DocId}</code>: document id to start with (to allow pagination
 %%          for duplicate start keys</li>
-%%      <li>{end_docid, DocId}: last document id to include in the result (to
+%%      <li><code>{end_docid, DocId}</code>: last document id to include in the result (to
 %%          allow pagination for duplicate endkeys)</li>
-%%      <li>{start_key, Key}: start result from key value</li>
-%%      <li>{end_key, Key}: end result from key value</li>
-%%      <li>{limit, Limit}: Limit the number of documents in the result</li>
-%%      <li>{stale, Stale}: If stale=ok is set, CouchDB will not refresh the view
+%%      <li><code>{start_key, Key}</code>: start result from key value</li>
+%%      <li><code>{end_key, Key}</code>: end result from key value</li>
+%%      <li><code>{limit, Limit}</code>: Limit the number of documents in the result</li>
+%%      <li><code>{stale, Stale}</code>: If stale=ok is set, CouchDB will not refresh the view
 %%      even if it is stale, the benefit is a an improved query latency. If
 %%      stale=update_after is set, CouchDB will update the view after the stale
 %%      result is returned.</li>
-%%      <li>descending: reverse the result</li>
-%%      <li>{skip, N}: skip n number of documents</li>
-%%      <li>group: the reduce function reduces to a single result
+%%      <li><code>descending</code>: reverse the result</li>
+%%      <li><code>{skip, N}</code>: skip n number of documents</li>
+%%      <li><code>group</code>: the reduce function reduces to a single result
 %%      row.</li>
-%%      <li>{group_level, Level}: the reduce function reduces to a set
+%%      <li><code>{group_level, Level}</code>: the reduce function reduces to a set
 %%      of distinct keys.</li>
-%%      <li>{reduce, boolean(): whether to use the reduce function of the view. It defaults to
+%%      <li><code>{reduce, boolean()}</code>: whether to use the reduce function of the view. It defaults to
 %%      true, if a reduce function is defined and to false otherwise.</li>
-%%      <li>include_docs: automatically fetch and include the document
+%%      <li><code>include_docs</code>: automatically fetch and include the document
 %%      which emitted each view entry</li>
-%%      <li>inclusive_end: Controls whether the endkey is included in
+%%      <li><code>{inclusive_end, boolean()}</code>: Controls whether the endkey is included in
 %%      the result. It defaults to true.</li>
-%%      <li>conflicts: include conflicts</li>
-%%      <li>{keys, [Keys]}: to pass multiple keys to the view query</li>
+%%      <li><code>conflicts</code>: include conflicts</li>
+%%      <li><code>{keys, [Keys]}</code>: to pass multiple keys to the view query</li>
 %%  </ul></p>
-%% 
-%% <p> Return {ok, StartRef, ViewPid} or {error, Error}. Ref can be
+%%
+%% <p> Return <code>{ok, StartRef, ViewPid}</code> or <code>{error,
+%Error}</code>. Ref can be
 %% used to disctint all changes from this pid. ViewPid is the pid of
 %% the view loop process. Can be used to monitor it or kill it
 %% when needed.</p>
@@ -192,7 +192,7 @@ count(Db, ViewName) ->
     count(Db, ViewName, []).
 
 -spec count(Db::db(), ViewName::'all_docs' | {DesignName::string(),
-        ViewName::string()}, Options::view_options()) 
+        ViewName::string()}, Options::view_options())
     -> integer() | {error, term()}.
 %% @doc count number of doc in a view (or all docs)
 count(#db{options=IbrowseOpts}=Db, ViewName, Options)->
@@ -228,7 +228,7 @@ first(Db) ->
     first(Db, 'all_docs', []).
 
 -spec first(Db::db(), ViewName::'all_docs' | {DesignName::string(),
-        ViewName::string()}) 
+        ViewName::string()})
     -> {ok, Row::ejson_object()} | {error, term()}.
 %% @equiv first(Db, ViewName, [])
 first(Db, ViewName) ->
@@ -236,21 +236,21 @@ first(Db, ViewName) ->
 
 
 -spec first(Db::db(), ViewName::'all_docs' | {DesignName::string(),
-        ViewName::string()}, Options::view_options()) 
+        ViewName::string()}, Options::view_options())
      -> {ok, Rows::ejson_object()} | {error, term()}.
-%% @doc get first result of a view 
+%% @doc get first result of a view
 %%  <p>Db: a db record</p>
 %%  <p>ViewName: 'all_docs' to get all docs or {DesignName,
 %%  ViewName}</p>
-%%  <p>Options :: view_options() [{key, binary()} | {start_docid, binary()}
+%%  <pre>Options :: view_options() [{key, binary()} | {start_docid, binary()}
 %%    | {end_docid, binary()} | {start_key, binary()}
 %%    | {end_key, binary()} | {limit, integer()}
 %%    | {stale, stale()}
 %%    | descending
 %%    | {skip, integer()}
 %%    | group | {group_level, integer()}
-%%    | inclusive_end | {reduce, boolean()} | reduce | include_docs | conflicts
-%%    | {keys, list(binary())}</p>
+%%    | {inclusive_end, boolean()} | {reduce, boolean()} | reduce | include_docs | conflicts
+%%    | {keys, list(binary())}</pre>
 %% <p>See {@link couchbeam_view:stream/4} for more information about
 %% options.</p>
 %% <p>Return: {ok, Row} or {error, Error}</p>
@@ -262,20 +262,20 @@ first(Db, ViewName, Options) ->
             Error
     end.
 
--spec fold(Function::function(), Acc::list(), Db::db(), 
+-spec fold(Function::function(), Acc::list(), Db::db(),
         ViewName::'all_docs' | {DesignName::string(), ViewName::string()})
     -> list(term()) | {error, term()}.
 %% @equiv fold(Function, Acc, Db, ViewName, [])
 fold(Function, Acc, Db, ViewName) ->
     fold(Function, Acc, Db, ViewName, []).
 
--spec fold(Function::function(), Acc::list(), Db::db(), 
+-spec fold(Function::function(), Acc::list(), Db::db(),
         ViewName::'all_docs' | {DesignName::string(),
         ViewName::string()}, Options::view_options())
     -> list(term()) | {error, term()}.
-%% @doc call Function(Row, AccIn) on succesive row, starting with 
+%% @doc call Function(Row, AccIn) on succesive row, starting with
 %% AccIn == Acc. Function/2 must return a new list accumultator or the
-%% atom <em>done</em> to stop fetching results. Acc0 is returned if the 
+%% atom <em>done</em> to stop fetching results. Acc0 is returned if the
 %% list is empty. For example:
 %% ```
 %% couchbeam_view:fold(fun(Row, Acc) -> [Row|Acc] end, [], Db, 'all_docs').
@@ -288,14 +288,14 @@ fold(Function, Acc, Db, ViewName, Options) ->
             Error
     end.
 
--spec foreach(Function::function(), Db::db(), 
+-spec foreach(Function::function(), Db::db(),
         ViewName::'all_docs' | {DesignName::string(), ViewName::string()})
     -> list(term()) | {error, term()}.
 %% @equiv foreach(Function, Db, ViewName, [])
 foreach(Function, Db, ViewName) ->
     foreach(Function, Db, ViewName, []).
 
--spec foreach(Function::function(),  Db::db(), 
+-spec foreach(Function::function(),  Db::db(),
         ViewName::'all_docs' | {DesignName::string(),
         ViewName::string()}, Options::view_options())
     -> list(term()) | {error, term()}.
@@ -323,7 +323,7 @@ parse_view_options(Options) ->
 parse_view_options([], Args) ->
     Args;
 parse_view_options([{key, Value}|Rest], #view_query_args{options=Opts}=Args) ->
-    Opts1 = [{"key", Value}|Opts],
+    Opts1 = [{"key", ejson:encode(Value)}|Opts],
     parse_view_options(Rest, Args#view_query_args{options=Opts1});
 parse_view_options([{start_docid, Value}|Rest], #view_query_args{options=Opts}=Args) ->
     Opts1 = [{"start_docid", Value}|Opts],
@@ -332,10 +332,10 @@ parse_view_options([{end_docid, Value}|Rest], #view_query_args{options=Opts}=Arg
     Opts1 = [{"end_docid", Value}|Opts],
     parse_view_options(Rest, Args#view_query_args{options=Opts1});
 parse_view_options([{start_key, Value}|Rest], #view_query_args{options=Opts}=Args) ->
-    Opts1 = [{"start_key", Value}|Opts],
+    Opts1 = [{"start_key", ejson:encode(Value)}|Opts],
     parse_view_options(Rest, Args#view_query_args{options=Opts1});
 parse_view_options([{end_key, Value}|Rest], #view_query_args{options=Opts}=Args) ->
-    Opts1 = [{"end_key", Value}|Opts],
+    Opts1 = [{"end_key", ejson:encode(Value)}|Opts],
     parse_view_options(Rest, Args#view_query_args{options=Opts1});
 parse_view_options([{limit, Value}|Rest], #view_query_args{options=Opts}=Args) ->
     Opts1 = [{"limit", Value}|Opts],
@@ -356,6 +356,12 @@ parse_view_options([group|Rest], #view_query_args{options=Opts}=Args) ->
     parse_view_options(Rest, Args#view_query_args{options=Opts1});
 parse_view_options([inclusive_end|Rest], #view_query_args{options=Opts}=Args) ->
     Opts1 = [{"inclusive_end", "true"}|Opts],
+    parse_view_options(Rest, Args#view_query_args{options=Opts1});
+parse_view_options([{inclusive_end, true}|Rest], #view_query_args{options=Opts}=Args) ->
+    Opts1 = [{"inclusive_end", "true"}|Opts],
+    parse_view_options(Rest, Args#view_query_args{options=Opts1});
+parse_view_options([{inclusive_end, false}|Rest], #view_query_args{options=Opts}=Args) ->
+    Opts1 = [{"inclusive_end", "false"}|Opts],
     parse_view_options(Rest, Args#view_query_args{options=Opts1});
 parse_view_options([reduce|Rest], #view_query_args{options=Opts}=Args) ->
     Opts1 = [{"reduce", "true"}|Opts],
@@ -381,7 +387,7 @@ parse_view_options([{list, Value}|Rest], #view_query_args{options=Opts}=Args) ->
 parse_view_options([{keys, Value}|Rest], Args) ->
     parse_view_options(Rest, Args#view_query_args{method=post,
             keys=Value});
-parse_view_options([{Key, Value}|Rest], #view_query_args{options=Opts}=Args) 
+parse_view_options([{Key, Value}|Rest], #view_query_args{options=Opts}=Args)
         when is_list(Key) ->
     Opts1 = [{Key, Value}|Opts],
     parse_view_options(Rest, Args#view_query_args{options=Opts1});
@@ -414,12 +420,12 @@ make_view(#db{server=Server}=Db, ViewName, Options, Fun) ->
         Args ->
             case ViewName of
                 'all_docs' ->
-                    Url = couchbeam:make_url(Server, [couchbeam:db_url(Db), 
+                    Url = couchbeam:make_url(Server, [couchbeam:db_url(Db),
                             "/_all_docs"],
                             Args#view_query_args.options),
                     Fun(Args, Url);
                 {DName, VName} ->
-                    Url = couchbeam:make_url(Server, [couchbeam:db_url(Db), 
+                    Url = couchbeam:make_url(Server, [couchbeam:db_url(Db),
                             "/_design/", DName, "/_view/", VName],
                             Args#view_query_args.options),
                     Fun(Args, Url);
@@ -427,7 +433,7 @@ make_view(#db{server=Server}=Db, ViewName, Options, Fun) ->
                     {error, invalid_view_name}
             end
     end.
-    
+
 collect_view_first(Ref, Pid) ->
     receive
         {row, Ref, done} ->
@@ -480,18 +486,20 @@ process_view_results(ReqId, Params, UserFun, Callback) ->
                         process_view_results1(ReqId, UserFun, Callback)
                     end,
                     ibrowse:stream_next(IbrowseRef),
-                    try 
+                    try
                         Callback(Ok, Headers, StreamDataFun),
                         couchbeam_httpc:clean_mailbox_req(ReqId)
                     catch
                         throw:http_response_end -> ok;
                         _:Error ->
                             UserFun({error, Error})
+                    after
+                        ibrowse:stream_close(ReqId)
                     end,
                     ok;
                 R when R =:= 301 ; R =:= 302 ; R =:= 303 ->
                     do_redirect(Headers, UserFun, Callback, Params),
-                    ibrowse:stream_close(reqId);
+                    ibrowse:stream_close(ReqId);
                 Error ->
                     UserFun({error, {http_error, {status,
                                     Error}}})

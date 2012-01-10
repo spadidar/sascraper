@@ -1,6 +1,6 @@
 %%% -*- erlang -*-
 %%%
-%%% This file is part of couchbeam released under the MIT license. 
+%%% This file is part of couchbeam released under the MIT license.
 %%% See the NOTICE for more information.
 
 -module(couchbeam_util).
@@ -13,6 +13,7 @@
 -export([propmerge/3, propmerge1/2]).
 -export([get_value/2, get_value/3]).
 -export([deprecated/3, shutdown_sync/1]).
+-export([start_app_deps/1, get_app_env/2]).
 
 -define(ENCODE_DOCID, true).
 
@@ -31,7 +32,7 @@ encode_docid(DocId)->
         true -> encode_docid1(DocId);
         false -> DocId
     end.
-    
+
 encode_docid1(DocId) ->
     case DocId of
         "_design/" ++ Rest ->
@@ -46,13 +47,13 @@ encode_query([]) ->
     [];
 encode_query(QSL) when is_list(QSL) ->
     lists:foldl(fun({K, V}, Acc) ->
-        V1 = encode_query_value(K, V), 
+        V1 = encode_query_value(K, V),
         [{K, V1}|Acc]
     end, [], QSL);
 encode_query(QSL) ->
     QSL.
 
-%% @doc Encode value in JSON if needed depending on the key 
+%% @doc Encode value in JSON if needed depending on the key
 encode_query_value(K, V) when is_atom(K) ->
     encode_query_value(atom_to_list(K), V);
 encode_query_value(K, V) when is_binary(K) ->
@@ -79,7 +80,7 @@ oauth_header(Url, Action, OauthProps) ->
     Token = to_list(get_value(token, OauthProps)),
     TokenSecret = to_list(get_value(token_secret, OauthProps)),
     ConsumerSecret = to_list(get_value(consumer_secret, OauthProps)),
-    SignatureMethodStr = to_list(get_value(signature_method, 
+    SignatureMethodStr = to_list(get_value(signature_method,
             OauthProps, "HMAC-SHA1")),
 
     SignatureMethodAtom = case SignatureMethodStr of
@@ -104,7 +105,7 @@ oauth_header(Url, Action, OauthProps) ->
 
 
 %% @doc merge 2 proplists. All the Key - Value pairs from both proplists
-%% are included in the new proplists. If a key occurs in both dictionaries 
+%% are included in the new proplists. If a key occurs in both dictionaries
 %% then Fun is called with the key and both values to return a new
 %% value. This a wreapper around dict:merge
 propmerge(F, L1, L2) ->
@@ -133,7 +134,7 @@ get_value(Key, Prop, Default) ->
 	    V;
 	Other when is_tuple(Other) -> % otherwise return the default
 	    Default
-    end.    
+    end.
 
 %% @doc make view options a list
 parse_options(Options) ->
@@ -143,11 +144,11 @@ parse_options([], Acc) ->
     Acc;
 parse_options([V|Rest], Acc) when is_atom(V) ->
     parse_options(Rest, [{atom_to_list(V), true}|Acc]);
-parse_options([{K,V}|Rest], Acc) when is_list(K) ->    
+parse_options([{K,V}|Rest], Acc) when is_list(K) ->
     parse_options(Rest, [{K,V}|Acc]);
 parse_options([{K,V}|Rest], Acc) when is_binary(K) ->
     parse_options(Rest, [{binary_to_list(K),V}|Acc]);
-parse_options([{K,V}|Rest], Acc) when is_atom(K) ->   
+parse_options([{K,V}|Rest], Acc) when is_atom(K) ->
     parse_options(Rest, [{atom_to_list(K),V}|Acc]);
 parse_options(_,_) ->
     fail.
@@ -213,4 +214,27 @@ shutdown_sync(Pid) ->
         end
     after
         erlang:demonitor(MRef, [flush])
+    end.
+
+%% @spec start_app_deps(App :: atom()) -> ok
+%% @doc Start depedent applications of App.
+start_app_deps(App) ->
+    {ok, DepApps} = application:get_key(App, applications),
+    [ensure_started(A) || A <- DepApps],
+    ok.
+
+%% @spec ensure_started(Application :: atom()) -> ok
+%% @doc Start the named application if not already started.
+ensure_started(App) ->
+    case application:start(App) of
+	ok ->
+	    ok;
+	{error, {already_started, App}} ->
+	    ok
+    end.
+
+get_app_env(Env, Default) ->
+    case application:get_env(couch, Env) of
+        {ok, Val} -> Val;
+        undefined -> Default
     end.

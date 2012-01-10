@@ -1,6 +1,6 @@
 %%% -*- erlang -*-
 %%%
-%%% This file is part of couchbeam released under the MIT license. 
+%%% This file is part of couchbeam released under the MIT license.
 %%% See the NOTICE for more information.
 
 -module(couchbeam_changes).
@@ -26,12 +26,15 @@
 stream(Db, Client) ->
     stream(Db, Client, []).
 
--spec stream(Db::db(), ClientPid::pid(),
-    Options::changes_options()) -> {ok, StartRef::term(),
-        ChangesPid::pid()} | {error, term()}. 
+
+
+-spec stream(Db::db() | function(), Client::pid() | function(),
+     Options::changes_options()) -> {ok, StartRef::term(), ChangesPid::pid()} |
+        {ok, ChangesPid::pid()} | {error, term()}.
 %% @doc Stream changes to a pid
 %%  <p>Db : a db record</p>
-%%  <p>ClientPid : pid where to send changes events where events are
+%%  <p>Client : pid  or callback where to send changes events where events are
+%%  The pid receive these events:
 %%  <dl>
 %%      <dt>{change, StartRef, {done, Lastseq::integer()}</dt>
 %%          <dd>Connection terminated or you got all changes</dd>
@@ -42,35 +45,40 @@ stream(Db, Client) ->
 %%          happend.</dd>
 %% </dl>
 %%    LastSeq is the last sequence of changes.</p>
-%% <p>ChangesOptions :: changes_options() [continuous | longpoll | normal
+%% While the callbac could be like:
+%%<pre>
+%%      fun({done, LastSeq}) ->
+%%          ok;
+%%      fun({done, LastSeq}) ->
+%%          ok;
+%%      fun({done, LastSeq}) ->
+%%          ok.</pre>
+%% <p><pre>>ChangesOptions :: changes_options() [continuous | longpoll | normal
 %%    | include_docs | {since, integer()}
 %%    | {timeout, integer()}
 %%    | heartbeat | {heartbeat, integer()}
-%%    | {filter, string()} | {filter, string(), list({string(), string() | integer()}
+%%    | {filter, string()} | {filter, string(), list({string(), string() | integer()}</pre>
 %%
 %%   <ul>
-%%      <li>continuous | longpoll | normal : set the type of changes
+%%      <li><code>continuous | longpoll | normal</code>: set the type of changes
 %%          feed to get</li>
-%%      <li>include_docs : if you want to include the doc in the line of
+%%      <li><code>include_doc</code>: if you want to include the doc in the line of
 %%          change</li>
-%%      <li>{timeout, Timeout::integer()} : timeout</li>
-%%      <li>heartbeat | {heartbeat, Heartbeat::integer()} : set couchdb 
+%%      <li><code>{timeout, Timeout::integer()}</code>:: timeout</li>
+%%      <li><code>heartbeat | {heartbeat, Heartbeat::integer()}</code>: set couchdb
 %%          to send a heartbeat to maintain connection open</li>
-%%      <li>{filter, FilterName} | {filter, FilterName, Args::list({key,
-%%          value}) : set the filter to use with optional arguments</li>
+%%      <li><code>{filter, FilterName} | {filter, FilterName, Args::list({key,
+%%          value})</code>: set the filter to use with optional arguments</li>
 %%   </ul></p>
 %%
 %% <p> Return {ok, StartRef, ChangesPid} or {error, Error}. Ref can be
 %% used to disctint all changes from this pid. ChangesPid is the pid of
 %% the changes loop process. Can be used to monitor it or kill it
 %% when needed.</p>
-stream(#db{server=Server, options=IbrowseOpts}=Db,
-        ClientPid, Options) ->
-    Args = parse_changes_options(Options),
-    Url = couchbeam:make_url(Server, [couchbeam:db_url(Db), "/_changes"],
-        Args#changes_args.http_options),
-    StartRef = make_ref(),
 
+
+stream(Db, ClientPid, Options) when is_pid(ClientPid) ->
+    StartRef = make_ref(),
     UserFun = fun
         (done) ->
             LastSeq = get(last_seq),
@@ -85,19 +93,25 @@ stream(#db{server=Server, options=IbrowseOpts}=Db,
             Seq = couchbeam_doc:get_value(<<"seq">>, Row),
             put(last_seq, Seq)
     end,
-    
-    Params = {Url, IbrowseOpts},
+    do_stream(Db, UserFun, Options, StartRef);
 
-    ChangesPid = spawn_link(couchbeam_changes, changes_loop,
-        [Args, UserFun, Params]),
+stream(Db, Fun, Options) ->
+    UserFun = fun
+        (done) ->
+            LastSeq = get(last_seq),
+            Fun({done, LastSeq});
+        ({error, Error}) ->
+            LastSeq = get(last_seq),
+            Fun({error, LastSeq, Error});
+        ({[{<<"last_seq">>, _}]}) ->
+            ok;
+        (Row) ->
+            Fun({change, Row}),
+            Seq = couchbeam_doc:get_value(<<"seq">>, Row),
+            put(last_seq, Seq)
+    end,
+    do_stream(Db, UserFun, Options).
 
-    case couchbeam_httpc:request_stream({ChangesPid, once}, get, Url, IbrowseOpts) of
-        {ok, ReqId} ->
-            ChangesPid ! {ibrowse_req_id, ReqId},
-            {ok, StartRef, ChangesPid};
-        Error ->
-            Error
-    end.
 
 -spec fetch(Db::db()) -> {ok, LastSeq::integer(), Rows::list()} | {error,
         LastSeq::integer(), Error::term()}.
@@ -109,28 +123,28 @@ fetch(Db) ->
         LastSeq::integer(), Rows::list()} | {error,  LastSeq::integer(),
         Error::term()}.
 %% @doc Collect Changes. Could be used to make a blocking call to a
-%% longpoll change feed 
+%% longpoll change feed
 %%  <p>Db : a db record</p>
-%% <p>ChangesOptions :: changes_options() [continuous | longpoll | normal
+%% <p><pre>ChangesOptions :: changes_options() [continuous | longpoll | normal
 %%    | include_docs | {since, integer()}
 %%    | {timeout, integer()}
 %%    | heartbeat | {heartbeat, integer()}
-%%    | {filter, string()} | {filter, string(), list({string(), string() | integer()}
+%%    | {filter, string()} | {filter, string(), list({string(), string() | integer()}</pre>
 %%
 %%   <ul>
-%%      <li>longpoll | normal : set the type of changes
+%%      <li><code>longpoll | normal</code>: set the type of changes
 %%          feed to get</li>
-%%      <li>include_docs : if you want to include the doc in the line of
+%%      <li><code>include_docs</code>: if you want to include the doc in the line of
 %%          change</li>
-%%      <li>{timeout, Timeout::integer()} : timeout</li>
-%%      <li>heartbeat | {heartbeat, Heartbeat::integer()} : set couchdb 
+%%      <li><code>{timeout, Timeout::integer()}</code>: timeout</li>
+%%      <li><code>heartbeat | {heartbeat, Heartbeat::integer()}</code>: set couchdb
 %%          to send a heartbeat to maintain connection open</li>
-%%      <li>{filter, FilterName} | {filter, FilterName, Args::list({key,
-%%          value}) : set the filter to use with optional arguments</li>
+%%      <li><code>{filter, FilterName} | {filter, FilterName, Args::list({key,
+%%          value})</code>: set the filter to use with optional arguments</li>
 %%   </ul></p>
 %%
-%% <p>Resut: {ok, LastSeq::integer(), Rows::list()} or {error, LastSeq,
-%% Error}. LastSeq is the last sequence of changes.</p>
+%% <p>Resut: <code>{ok, LastSeq::integer(), Rows::list()}</code> or
+%% <code>{error, LastSeq, Error}</code>. LastSeq is the last sequence of changes.</p>
 fetch(Db, Options) ->
     case stream(Db, self(), Options) of
         {ok, StartRef, _} ->
@@ -214,10 +228,36 @@ changes_loop(Args, UserFun, Params) ->
         {ibrowse_req_id, ReqId} ->
             process_changes(ReqId, Params, UserFun, Callback)
     after ?DEFAULT_TIMEOUT ->
-        UserFun({error, timeout}) 
+        UserFun({error, timeout})
     end.
 
 %% @private
+do_stream(Db, UserFun, Options) ->
+    do_stream(Db, UserFun, Options, nil).
+
+do_stream(#db{server=Server, options=IbrowseOpts}=Db, UserFun, Options,
+        StartRef) ->
+    Args = parse_changes_options(Options),
+    Url = couchbeam:make_url(Server, [couchbeam:db_url(Db), "/_changes"],
+        Args#changes_args.http_options),
+
+    Params = {Url, IbrowseOpts},
+
+    ChangesPid = spawn_link(couchbeam_changes, changes_loop,
+        [Args, UserFun, Params]),
+
+    case couchbeam_httpc:request_stream({ChangesPid, once}, get, Url, IbrowseOpts) of
+        {ok, ReqId} ->
+            ChangesPid ! {ibrowse_req_id, ReqId},
+            case StartRef of
+                nil ->
+                    {ok, ChangesPid};
+                _ ->
+                    {ok, StartRef, ChangesPid}
+            end;
+        Error ->
+            Error
+    end.
 
 collect_changes(Ref, Acc) ->
     receive
@@ -229,7 +269,7 @@ collect_changes(Ref, Acc) ->
         {error, Ref, LastSeq, Error} ->
             {error, LastSeq, Error}
     end.
-            
+
 
 process_changes(ReqId, Params, UserFun, Callback) ->
     receive
@@ -240,7 +280,7 @@ process_changes(ReqId, Params, UserFun, Callback) ->
                         process_changes1(ReqId, UserFun, Callback)
                     end,
                     ibrowse:stream_next(IbrowseRef),
-                    try 
+                    try
                         Callback(Ok, Headers, StreamDataFun),
                         couchbeam_httpc:clean_mailbox_req(ReqId)
                     catch
@@ -280,7 +320,7 @@ end.
 do_redirect(Headers, UserFun, Callback, {Url, IbrowseOpts}) ->
     RedirectUrl = couchbeam_httpc:redirect_url(Headers, Url),
     Params = {RedirectUrl, IbrowseOpts},
-    case couchbeam_httpc:request_stream({self(), once}, get, RedirectUrl, 
+    case couchbeam_httpc:request_stream({self(), once}, get, RedirectUrl,
             IbrowseOpts) of
         {ok, ReqId} ->
             process_changes(ReqId, Params, UserFun, Callback);
@@ -356,13 +396,13 @@ wait_for_change(Reqid, ReqStatus, Acc) ->
             wait_for_change(Reqid, ReqStatus, [Chunk|Acc]);
         {ibrowse_async_headers, Reqid, Status, _Headers} ->
 
-            ibrowse:stream_next(Reqid), 
-            wait_for_change(Reqid, list_to_integer(Status), Acc) 
+            ibrowse:stream_next(Reqid),
+            wait_for_change(Reqid, list_to_integer(Status), Acc)
     end.
-    
 
 
-%% @doc initiate continuous loop 
+
+%% @doc initiate continuous loop
 %% @deprecated this function have been deprecated and will be removed in
 %% version 0.8
 continuous_acceptor(Pid, PidRef) ->
@@ -392,10 +432,10 @@ continuous_acceptor(Pid, PidRef, IbrowseRef, State) ->
             if Status =/= "200" ->
                     Pid ! {PidRef, {error, {Status, Headers}}};
                 true ->
-                    ibrowse:stream_next(IbrowseRef), 
+                    ibrowse:stream_next(IbrowseRef),
                     continuous_acceptor(Pid, PidRef, IbrowseRef, State)
-                    
-            end 
+
+            end
     end.
 
 %% @deprecated this function have been deprecated and will be removed in
@@ -406,12 +446,12 @@ handle_messages([], _Pid, _PidRef, IbrowseRef, State) ->
 handle_messages([<<"{\"last_seq\":", LastSeq/binary>>], Pid, PidRef,
         IbrowseRef, State) ->
     %% end of continuous response
-    
+
     %% get last sequence
     L = size(LastSeq) - 1,
     <<LastSeq1:L/binary, _/binary>> = LastSeq,
     LastSeqInt = list_to_integer(binary_to_list(LastSeq1)),
-    
+
     Pid ! {PidRef, {last_seq, LastSeqInt}},
 
     ibrowse:stream_next(IbrowseRef),
