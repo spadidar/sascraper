@@ -1,4 +1,10 @@
-Experimental Erlang Project
-===========================
+#Experimental Erlang Project
+==============================
+
+##requirements
+
 - couchdb
-- inets
+- lhttpc
+- mochiweb
+
+**2011-2012 (c) Sasan Padidar <sp@sasanpadidar.com>**
