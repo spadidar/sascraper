@@ -3,8 +3,8 @@
 
 ##requirements
 
-- couchdb
-- lhttpc
-- mochiweb
+* couchdb
+* lhttpc
+* mochiweb
 
 **2011-2012 (c) Sasan Padidar <sp@sasanpadidar.com>**
