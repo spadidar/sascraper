@@ -3,11 +3,10 @@
 
 run_app() -> 
     main:start("",""),
-    R = http_utils:get("http://tamale.net/erlang/tutorial.shtml"),
+    R = http_utils:get("http://www.tamale.net/erlang/tutorial.shtml"),
     D = element(3,R),
     T = mochiweb_html:tokens(D),
     get_text(T),
-    io:format("~w~n",[T]),
     halt().
 
 get_text(Tokens) ->
