@@ -2,6 +2,8 @@
 
 -export([get/1, get/4,
 	 prepare_url/1,
+	 extract_text/1, 
+	 extract_text/0, 
 	 get_text/1, 
 	 get_data/1,
 	 parse_response/1]).
@@ -32,25 +34,37 @@ parse_response(Response) ->
     Tokens = mochiweb_html:tokens(Body),
     Tokens.
 
-get_text(Tokens) ->
-    Printer = fun(E) -> get_data(E) end,
-    lists:foreach(Printer, Tokens).
-    
+extract_text() ->
+    [].
+extract_text([T|Ts]) ->
+    case get_data(T) of
+	false ->
+	    extract_text(Ts),
+	    io:format("False: ~p~n", [T]);
+	{body, Body} ->
+	    io:format("TRue: ~p~n", [Body]),
+	    lists:append(Body, extract_text(Ts))
+    end.
+			     
+			        
+    %% Printer = fun(E) -> get_data(E) end,
+    %% lists:foreach(Printer, Tokens).
+
+get_text([]) ->
+    false.
 
 get_data(Data) ->
-    Text = [],
-	case Data of
-	    {data, Body, _} ->
-		io:format("~p~n",[Body]),
-		lists:append(Body);
-	    %% {Type, _, _} ->
-	    %% 	io:format("~p~n",[Type]);
-	    %% {Type,_, _, _} ->
-	    %% 	io:format("~p~n",[Type]);
-	    %% {Type,_,_, _, _} ->
-	    %% 	io:format("~p~n",[Type]);
-	    _ ->
-		false
-	end,
-    Text.
+    case Data of
+	{data, Body, _} ->
+	    io:format("~p~n",[Body]),
+	    {body, Body};
+	%% {Type, _, _} ->
+	%% 	io:format("~p~n",[Type]);
+	%% {Type,_, _, _} ->
+	%% 	io:format("~p~n",[Type]);
+	%% {Type,_,_, _, _} ->
+	%% 	io:format("~p~n",[Type]);
+	_ ->
+	    false
+    end.
 
