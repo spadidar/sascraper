@@ -3,7 +3,6 @@
 -export([get/1, get/4,
 	 prepare_url/1,
 	 extract_text/1, 
-	 extract_text/0, 
 	 get_text/1, 
 	 get_data/1,
 	 parse_response/1]).
@@ -34,11 +33,12 @@ parse_response(Response) ->
     Tokens = mochiweb_html:tokens(Body),
     Tokens.
 
-extract_text() ->
-    [].
+extract_text([]) ->
+    [];
 extract_text([T|Ts]) ->
     case get_data(T) of
 	false ->
+	    io:format("S: ~p~n", [Ts]),
 	    extract_text(Ts),
 	    io:format("False: ~p~n", [T]);
 	{body, Body} ->
