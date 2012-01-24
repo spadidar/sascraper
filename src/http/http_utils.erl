@@ -38,12 +38,14 @@ extract_text([]) ->
 extract_text([T|Ts]) ->
     case get_data(T) of
 	false ->
-	    io:format("S: ~p~n", [Ts]),
+	    %% io:format("S: ~p~n", [Ts]),
 	    extract_text(Ts),
 	    io:format("False: ~p~n", [T]);
 	{body, Body} ->
 	    io:format("TRue: ~p~n", [Body]),
-	    lists:append(Body, extract_text(Ts))
+	    %% io:format("TS: ~p~n", [Ts])
+	    %% lists:append(Body, extract_text(Ts))
+	    extract_text(Ts)
     end.
 			     
 			        
@@ -56,14 +58,13 @@ get_text([]) ->
 get_data(Data) ->
     case Data of
 	{data, Body, _} ->
-	    io:format("~p~n",[Body]),
 	    {body, Body};
-	%% {Type, _, _} ->
-	%% 	io:format("~p~n",[Type]);
-	%% {Type,_, _, _} ->
-	%% 	io:format("~p~n",[Type]);
-	%% {Type,_,_, _, _} ->
-	%% 	io:format("~p~n",[Type]);
+	{start_tag, Tag, _, _} ->
+	    io:format("Start: ~p~n",[Tag]),
+	    false;
+	{end_tag, Tag} ->
+	    io:format("End: ~p~n",[Tag]),
+	    false;
 	_ ->
 	    false
     end.
