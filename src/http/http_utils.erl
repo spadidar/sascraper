@@ -39,10 +39,10 @@ extract_text([T|Ts]) ->
     case get_data(T) of
 	false ->
 	    %% io:format("S: ~p~n", [Ts]),
-	    extract_text(Ts),
-	    io:format("False: ~p~n", [T]);
+	    extract_text(Ts);
+	    %% io:format("False: ~p~n", [T]);
 	{body, Body} ->
-	    io:format("TRue: ~p~n", [Body]),
+	    io:format("--->: ~p~n", [Body]),
 	    %% io:format("TS: ~p~n", [Ts])
 	    %% lists:append(Body, extract_text(Ts))
 	    extract_text(Ts)
