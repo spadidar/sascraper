@@ -4,7 +4,8 @@
 
 run_app() -> 
     main:start("",""),
-    R = http_utils:get("http://www.tamale.net/erlang/tutorial.shtml"),
+    R = http_utils:get("http://paulgraham.com/better.html"),
+    %% R = http_utils:get("http://www.tamale.net/erlang/tutorial.shtml"),
     T = http_utils:parse_response(R),
     http_utils:extract_text(T),
     %% io:format("~p~n", [T]),
