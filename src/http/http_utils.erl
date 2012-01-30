@@ -3,7 +3,7 @@
 -export([get/1, get/4,
 	 prepare_url/1,
 	 extract_text/1, 
-	 get_text/1, 
+	 extract_text/2,
 	 get_data/1,
 	 parse_response/1]).
 
@@ -33,37 +33,38 @@ parse_response(Response) ->
     Tokens = mochiweb_html:tokens(Body),
     Tokens.
 
-extract_text([]) ->
-    [];
-extract_text([T|Ts]) ->
+extract_text(Tokens) ->
+    extract_text(Tokens, []).
+
+extract_text([], Acc) -> 
+    Acc;
+extract_text([T|Ts], Acc) ->
     case get_data(T) of
 	false ->
-	    %% io:format("S: ~p~n", [Ts]),
-	    extract_text(Ts);
-	    %% io:format("False: ~p~n", [T]);
+	    extract_text(Ts, Acc);
 	{body, Body} ->
-	    io:format("--->: ~p~n", [Body]),
-	    %% io:format("TS: ~p~n", [Ts])
-	    %% lists:append(Body, extract_text(Ts))
-	    extract_text(Ts)
+	    io:format("Body>> ~p~n", [Body]),
+	    extract_text(Ts,[bitstring_to_list(Body)|Acc])
+	    %% lists:append(bitstring_to_list(Body), bitstring_to_list(extract_text(Ts)))
     end.
 			     
 			        
     %% Printer = fun(E) -> get_data(E) end,
     %% lists:foreach(Printer, Tokens).
 
-get_text([]) ->
-    false.
+clean_data(String) ->
+    String.
+
 
 get_data(Data) ->
     case Data of
 	{data, Body, _} ->
 	    {body, Body};
 	{start_tag, Tag, _, _} ->
-	    io:format("Start: ~p~n",[Tag]),
+	    %% io:format("Start: ~p~n",[Tag]),
 	    false;
 	{end_tag, Tag} ->
-	    io:format("End: ~p~n",[Tag]),
+	    %% io:format("End: ~p~n",[Tag]),
 	    false;
 	_ ->
 	    false
