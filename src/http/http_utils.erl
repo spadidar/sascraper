@@ -43,8 +43,14 @@ extract_text([T|Ts], Acc) ->
 	false ->
 	    extract_text(Ts, Acc);
 	{body, Body} ->
-	    io:format("Body>> ~p~n", [Body]),
-	    extract_text(Ts,[bitstring_to_list(Body)|Acc])
+	    %% io:format("Body>> ~p~n", [Body]),
+	    CleanBody = clean_data(Body),
+	    if
+		CleanBody =:= [] ->
+		    extract_text(Ts,Acc);
+		true    ->
+		    extract_text(Ts,[CleanBody|Acc])
+	    end
 	    %% lists:append(bitstring_to_list(Body), bitstring_to_list(extract_text(Ts)))
     end.
 			     
@@ -52,8 +58,10 @@ extract_text([T|Ts], Acc) ->
     %% Printer = fun(E) -> get_data(E) end,
     %% lists:foreach(Printer, Tokens).
 
-clean_data(String) ->
-    String.
+clean_data(Bitstring) ->
+    String = bitstring_to_list(Bitstring),
+    %% string_utils:gsub(String, both, $\n)
+    string_utils:gsub(String, "\n", "").
 
 
 get_data(Data) ->
