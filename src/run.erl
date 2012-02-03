@@ -4,7 +4,8 @@
 
 run_app() -> 
     main:start("",""),
-    R = http_utils:get("http://www.tamale.net/erlang/tutorial.shtml"),
+    %% R = http_utils:get("http://www.tamale.net/erlang/tutorial.shtml"),
+    R = http_utils:get("http://www.reddit.com/"),
     file:write_file("./response.txt", io_lib:fwrite("~p.\n", [R])),
     T = http_utils:parse_response(R),
     Text = http_utils:extract_text(T),
