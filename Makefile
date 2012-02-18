@@ -43,7 +43,9 @@ get_deps: remove_deps
 	git clone https://github.com/cmullaparthi/ibrowse.git $(DEPS)/ibrowse
 	git clone https://github.com/mochi/mochiweb.git $(DEPS)/mochiweb
 	git clone https://github.com/tim/erlang-oauth $(DEPS)/oauth
-	git clone https://github.com/benoitc/ejson.git $(DEPS)/ejson
+	# git clone https://github.com/benoitc/ejson.git $(DEPS)/ejson
+	git clone git://github.com/TonyGen/bson-erlang.git $(DEPS)/bson	
+	git clone git://github.com/TonyGen/mongodb-erlang.git $(DEPS)/mongodb
 	hg clone https://bitbucket.org/etc/lhttpc $(DEPS)/lhttpc
 
 remove_deps:
@@ -56,10 +58,11 @@ build_deps:
 	echo "Copying rebar to dependencies"
 	cp $(DEPS)/rebar/rebar $(DEPS)/couchbeam
 	cp $(DEPS)/rebar/rebar $(DEPS)/ibrowse
-	cp $(DEPS)/rebar/rebar $(DEPS)/ejson
+	# cp $(DEPS)/rebar/rebar $(DEPS)/ejson
 	cp $(DEPS)/rebar/rebar $(DEPS)/oauth
 	cp $(DEPS)/rebar/rebar $(DEPS)/mochiweb
-	# cp $(DEPS)/rebar/rebar $(DEPS)/lhttpc does not use rebar
+	cp $(DEPS)/rebar/rebar $(DEPS)/bson
+	cp $(DEPS)/rebar/rebar $(DEPS)/mongodb
 
 	echo "Building CouchBeam"
 	cd $(DEPS)/couchbeam/; make
@@ -76,6 +79,14 @@ build_deps:
 	echo "Building oauth"
 	cd $(DEPS)/oauth; make
 
-	echo "Building ejson"
-	cd $(DEPS)/ejson/; make
+	# echo "Building ejson"
+	# cd $(DEPS)/ejson/; make
+
+	echo "Building bson"
+	cd $(DEPS)/bson/; ./rebar get-deps
+	cd $(DEPS)/bson/; ./rebar compile
+
+	echo "Building mongodb"
+	cd $(DEPS)/mongodb/; ./rebar get-deps
+	cd $(DEPS)/mongodb/; ./rebar compile
 
