@@ -50,7 +50,8 @@ start(_Type, _Args) ->
 		     syntax_tools,
 		     ibrowse,
 		     couchbeam,
-		     mochiweb]) of
+		     mochiweb,
+		     mongodb]) of
         ok ->
 	    ok;
         Error ->
@@ -70,7 +71,8 @@ stop(_State) ->
 		    xmerl,
 		    compiler,
 		    syntax_tools,
-		    mochiweb]) of
+		    mochiweb,
+		    mongodb]) of
         ok ->
 	    ok;
         Error ->
