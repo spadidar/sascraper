@@ -2,9 +2,9 @@
 -export([download/1, 
 	 store_response/1,
 	 scrape_urls/1,
-	 scrape/1]).
+	 scrape/3]).
 
-scrape(URL) ->
+scrape(URL, Depth, Speed) ->
     .
 
 scrape_urls(URL) ->
