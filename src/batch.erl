@@ -4,4 +4,4 @@
 	]).
 
 batch(Job, PID, Overlap) ->
-    .
+    Job.
