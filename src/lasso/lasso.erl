@@ -6,6 +6,14 @@
 	 extract_urls/1
 	]).
 
+receive_jobs() ->
+    receive
+	{job, {U, D}} ->
+	    scrape(U, D);
+	_Other -> {error, unknown_msg}
+		
+    end.
+
 scrape(URL, Depth) ->
     case extract_urls(URL) of 
 	{match, URLS} ->
