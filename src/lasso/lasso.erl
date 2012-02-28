@@ -2,12 +2,17 @@
 -export([download/1, 
 	 store_response/1,
 	 scrape_urls/1,
-	 scrape/3,
+	 scrape/2,
 	 extract_urls/1
 	]).
 
-scrape(URL, Depth, Speed) ->
-    .
+scrape(URL, Depth) ->
+    case extract_urls(URL) of 
+	{match, URLS} ->
+	    URLS;
+	nomatch ->
+	    nomatch
+    end.
 
 scrape_urls(URL) ->
     case download(URL) of
@@ -16,7 +21,7 @@ scrape_urls(URL) ->
     end.
 
 extract_urls(Response) ->
-    RegExp = "href=[\"]?([^\">]+)",
+    RegExp = "href=[\\'\"]?([^\\'\" >]+)",
     Options = [],
     {ok, RE} = re:compile(RegExp),
     case re:run(Response, RE) of
