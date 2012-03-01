@@ -28,3 +28,5 @@ mongo_connect() ->
 mongo_disconnect(Conn) ->
     ok = mongo:disconnect(Conn).
     
+insert(Conn, DB, Collection, Data) ->
+    mongo:do(safe, master, Conn, lasso, fun() -> mongo:insert(urls, {x,1,y,2}) end).
