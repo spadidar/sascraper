@@ -4,7 +4,8 @@
 -export([couch_connect/0,
 	 couch_create_db/2,
 	 mongo_connect/0,
-	 mongo_disconnect/1
+	 mongo_disconnect/1,
+	 mongo_insert/4
 	]).
 
 couch_connect() ->
