@@ -1,4 +1,4 @@
--module(db_manager).
+-module(db).
 -include("include/settings.hrl").
 
 -export([couch_connect/0,
@@ -28,5 +28,5 @@ mongo_connect() ->
 mongo_disconnect(Conn) ->
     ok = mongo:disconnect(Conn).
     
-insert(Conn, DB, Collection, Data) ->
-    mongo:do(safe, master, Conn, lasso, fun() -> mongo:insert(urls, {x,1,y,2}) end).
+mongo_insert(Conn, DB, Collection, Data) ->
+    mongo:do(safe, master, Conn, DB, fun() -> mongo:insert(Collection, Data) end).
