@@ -9,4 +9,6 @@
 
 -record(mongo_creds, 
 	{host = "localhost",
-	 port = 27017}).
+	 port = 27017,
+	 lasso_db = lasso
+	}).

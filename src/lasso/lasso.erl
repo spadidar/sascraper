@@ -1,4 +1,5 @@
 -module(lasso).
+-include("include/settings.hrl").
 -export([download/1, 
 	 store_response/1,
 	 scrape_urls/1,
@@ -21,6 +22,11 @@ scrape(URL, Depth) ->
 	nomatch ->
 	    nomatch
     end.
+
+queue_new_urls(URLS) ->
+    Config = #mongo_creds{},
+    db:mongo_insert(db:mongo_connect(), Config#mongo_creds.lasso_db, urls, {url,list_to_binary(URL)}
+		    .
 
 scrape_urls(URL) ->
     case download(URL) of
