@@ -5,7 +5,8 @@
 	 couch_create_db/2,
 	 mongo_connect/0,
 	 mongo_disconnect/1,
-	 mongo_insert/4
+	 mongo_insert/4,
+	 mongo_find/4
 	]).
 
 couch_connect() ->
@@ -31,3 +32,6 @@ mongo_disconnect(Conn) ->
     
 mongo_insert(Conn, DB, Collection, Data) ->
     mongo:do(safe, master, Conn, DB, fun() -> mongo:insert(Collection, Data) end).
+
+mongo_find(Conn, DB, Collection, Data) ->
+    mongo:do(safe, master, Conn, DB, fun() -> mongo:find(Collection, Data) end).
