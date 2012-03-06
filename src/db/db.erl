@@ -6,7 +6,8 @@
 	 mongo_connect/0,
 	 mongo_disconnect/1,
 	 mongo_insert/4,
-	 mongo_find/4
+	 mongo_find/4,
+	 mongo_read/1
 	]).
 
 couch_connect() ->
@@ -31,7 +32,23 @@ mongo_disconnect(Conn) ->
     ok = mongo:disconnect(Conn).
     
 mongo_insert(Conn, DB, Collection, Data) ->
-    mongo:do(safe, master, Conn, DB, fun() -> mongo:insert(Collection, Data) end).
+    case mongo_connect:is_closed(Conn) of
+	false -> 
+	    mongo:do(safe, master, Conn, DB, fun() -> mongo:insert(Collection, Data) end);
+	true ->
+	    mongo:do(safe, master, mongo_connect(), DB, fun() -> mongo:insert(Collection, Data) end)
+    end.
 
 mongo_find(Conn, DB, Collection, Data) ->
-    mongo:do(safe, master, Conn, DB, fun() -> mongo:find(Collection, Data) end).
+    case mongo_connect:is_closed(Conn) of
+	false -> 
+	    mongo:do(safe, master, Conn, DB, fun() -> mongo:find(Collection, Data) end);
+	true ->
+	    mongo:do(safe, master, mongo_connect(), DB, fun() -> mongo:find(Collection, Data) end)
+    end.
+
+mongo_read(Result) ->
+    case Result of 
+	{ok, Docs} -> mvar:read(Docs);
+	{error, _} -> error
+    end.
