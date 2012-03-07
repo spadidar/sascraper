@@ -7,11 +7,6 @@ passing_test() -> ?assert(true).
 failing_test() -> ?assert(false).
 
 run_app() -> 
-    application:start(sasl),
-    application:start(ibrowse),
-    application:start(couchbeam),
-    Server = db_manager:connect(),
-    couchbeam:create_db(Server, "sasandzc", [], []),
-    http_utilities:print("connected"),
+    main:start("",""),
     halt().
 
