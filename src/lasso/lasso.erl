@@ -12,8 +12,9 @@ receive_jobs() ->
     receive
 	{job, {U, D}} ->
 	    scrape(U, D);
-	_Other -> {error, unknown_msg}
-		
+	_Other -> 
+	    io:format("~p~n", [_Other]),
+	    {error, unknown_msg}
     end.
 
 scrape(URL, Depth) ->
