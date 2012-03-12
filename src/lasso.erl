@@ -4,10 +4,11 @@
 	 scrape_urls/1,
 	 scrape/2,
 	 extract_urls/1,
-	 queue_new_url/1
+	 queue_new_url/1,
+	 receive_url/0
 	]).
 
-receive_jobs() ->
+receive_url() ->
     receive
 	{job, {U, D}} ->
 	    scrape(U, D);
@@ -24,7 +25,7 @@ scrape(URL, Depth) ->
 	    nomatch
     end.
 
-queue_new_url([]) -> [].
+queue_new_url([]) -> [];
 queue_new_url([URL|URLS]) ->
     Config = #mongo_creds{},
     db:mongo_insert(db:mongo_connect(), Config#mongo_creds.lasso_db, urls, {url,list_to_binary(URL)}),
