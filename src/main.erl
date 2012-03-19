@@ -49,7 +49,6 @@ start(_Type, _Args) ->
 		     compiler,
 		     syntax_tools,
 		     ibrowse,
-		     couchbeam,
 		     mochiweb,
 		     mongodb]) of
         ok ->
@@ -66,7 +65,6 @@ stop(_State) ->
 		    ssl, 
 		    inets, 
 		    ibrowse,
-		    couchbeam,
 		    lhttpc,
 		    xmerl,
 		    compiler,
