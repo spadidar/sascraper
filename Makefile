@@ -24,8 +24,9 @@ compile:
 	@$(ERL) -pa $(EBIN_DIRS) -noinput +B -eval 'case make:all() of up_to_date -> halt(0); error -> halt(1) end.'
 
 test: $(APPLICATION) $(TEST_BEAMS) util/run_test.beam
+	echo "TEST"
 	@echo Running tests
-	@erl -pa util/ -pa ebin/ -pa test/ -noinput -s run_test run
+	@erl -pa ebin/ -pa test/ -noinput -s run_test run
 
 test_shell: $(APPLICATION) $(TEST_BEAMS)
 	@echo Starting a shell with test paths included
