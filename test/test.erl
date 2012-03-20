@@ -1,6 +1,6 @@
 -module(test).
 -compile(export_all).
--include_lib("/usr/lib/erlang/lib/eunit-2.1.7/include/eunit.hrl").
+-include_lib("include/eunit/include/eunit.hrl").
 
 passing_test() -> ?assert(true).
 

@@ -23,18 +23,17 @@ start: all start_all
 compile:
 	@$(ERL) -pa $(EBIN_DIRS) -noinput +B -eval 'case make:all() of up_to_date -> halt(0); error -> halt(1) end.'
 
-test: $(APPLICATION) $(TEST_BEAMS) util/run_test.beam
-	echo "TEST"
+test: build_tests
 	@echo Running tests
-	@erl -pa ebin/ -pa test/ -noinput -s run_test run
+	@erl -pa ebin/ -pa ebin/tests/ -noinput -s test_runner run_tests
 
-test_shell: $(APPLICATION) $(TEST_BEAMS)
+test_shell:
 	@echo Starting a shell with test paths included
-	@erl -pa ebin/ -pa test/
+	@erl -pa ebin/ -pa ebin/test -pa $(EBIN_DIRS)
 
-test/%.beam: test/%.erl
+build_tests:
 	@echo Compiling $<
-	@erlc +debug_info -o test/ $<
+	@erlc +debug_info -o ebin/tests/ test/*.erl $<
 
 edoc:		
 	@echo Generating $(APP) documentation from srcs
