@@ -6,7 +6,3 @@ passing_test() -> ?assert(true).
 
 failing_test() -> ?assert(false).
 
-run_app() -> 
-    main:start("",""),
-    halt().
-

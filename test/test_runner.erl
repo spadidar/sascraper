@@ -3,4 +3,5 @@
 
 run_tests() -> 
     main:start("",""),
+    test:passing_test(),
     halt().

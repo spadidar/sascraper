@@ -1,0 +1,3 @@
+-module(scraper_test).
+-compile(export_all).
+-include_lib("include/eunit/include/eunit.hrl").
