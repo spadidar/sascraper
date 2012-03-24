@@ -23,6 +23,10 @@ start: all start_all
 compile:
 	@$(ERL) -pa $(EBIN_DIRS) -noinput +B -eval 'case make:all() of up_to_date -> halt(0); error -> halt(1) end.'
 
+shell:
+	@echo Starting a shell with test paths included
+	@erl -pa ebin/ -pa $(EBIN_DIRS)
+
 test: build_tests
 	@echo Running tests
 	@erl -pa ebin/ -pa ebin/tests/ -noinput -s test_runner run_tests

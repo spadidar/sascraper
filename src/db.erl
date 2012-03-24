@@ -7,7 +7,8 @@
 	 mongo_disconnect/1,
 	 mongo_insert/4,
 	 mongo_find/4,
-	 mongo_read/1
+	 mongo_read/1,
+	 mongo_delete/2
 	]).
 
 couch_connect() ->
@@ -52,3 +53,6 @@ mongo_read(Result) ->
 	{ok, Docs} -> mvar:read(Docs);
 	{error, _} -> error
     end.
+
+mongo_delete(Collection, Selector) ->
+    mongo:delete(Collection, Selector).
