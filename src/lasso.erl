@@ -11,6 +11,7 @@
 receive_url() ->
     receive
 	{job, {U, D}} ->
+	    io:format("Got it ~p~n", [U]),
 	    scrape(U, D);
 	_Other -> 
 	    io:format("~p~n", [_Other]),

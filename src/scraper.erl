@@ -1,11 +1,14 @@
 -module(scraper).
--export([scrape/0]).
+-export([scrape/1,
+	run_scraper/0]).
 
-scrape()->
+run_scraper() ->
     Conn = db:mongo_connect(),
     Result = db:mongo_find(Conn, lasso, urls, {}),
-    URLS = db:mongo_read(Result),
-    Pid = spawn(lasso, recieve_jobs, ["www.yahoo.com"]),
+    URLS = db:mongo_read(Result).
+    
+scrape(Url)->
+    Pid = spawn(lasso, receive_url, [Url]),
     Pid ! "Test Brow",
     Pid ! stop
     %pass url to lasso one by one
