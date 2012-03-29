@@ -10,9 +10,11 @@
 
 receive_url() ->
     receive
-	{job, {U, D}} ->
-	    io:format("Got it ~p~n", [U]),
-	    scrape(U, D);
+	{url, Url} ->
+	    io:format("Got it ~p~n", [Url]);
+	    %% scrape(U, D);
+	stop ->
+	    ture;
 	_Other -> 
 	    io:format("~p~n", [_Other]),
 	    {error, unknown_msg}

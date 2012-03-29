@@ -8,8 +8,8 @@ run_scraper() ->
     URLS = db:mongo_read(Result).
     
 scrape(Url)->
-    Pid = spawn(lasso, receive_url, [Url]),
-    Pid ! "Test Brow",
+    Pid = spawn(lasso, receive_url, []),
+    Pid ! {url,"Test Brow"},
     Pid ! stop
     %pass url to lasso one by one
     %lasso runs in threads 
