@@ -1,1 +1,4 @@
 -module(browser).
+
+-export([]).
+
