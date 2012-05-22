@@ -7,7 +7,7 @@
 	    db_manager	
         ]},	
   {registered, []},
-  {applications, [kernel, stdlib, sasl, ibrowse, couchbeam]},
+  {applications, [kernel, stdlib, sasl, inets, couchbeam]},
   {env, []},
 
   %% Application Start point
