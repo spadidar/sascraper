@@ -7,3 +7,9 @@
 
 get(Url) ->
     ibrowse:send_req(Url, [], get).
+
+post(Url) ->
+    ibrowse:send_req(Url, [], get).
+
+load(Url) ->
+    ibrowse:send_req(Url, [], get).

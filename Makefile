@@ -25,7 +25,7 @@ compile:
 
 shell:
 	@echo Starting a shell with test paths included
-	@erl -pa ebin/ -pa $(EBIN_DIRS)
+	@erl -pa ebin/ -pa $(EBIN_DIRS) -eval 'main:start("","")'
 
 test: build_tests
 	@echo Running tests
