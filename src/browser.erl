@@ -6,7 +6,7 @@
 	]).
 
 get(Url) ->
-    ibrowse:send_req(Url, [], get).
+    httpc:request(Url).
 
 post(Url) ->
     ibrowse:send_req(Url, [], get).

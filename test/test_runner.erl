@@ -4,6 +4,7 @@
 run_tests() -> 
     main:start("",""),
     test:passing_test(),
-    scraper_test:test_scrape().
+    scraper_test:test_scrape(),
+    browser_test:get_test().
 
     %% halt().

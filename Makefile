@@ -29,7 +29,7 @@ shell:
 
 test: build_tests
 	@echo Running tests
-	@erl -pa ebin/ -pa ebin/tests/ -noinput -s test_runner run_tests
+	@erl -pa ebin/ -pa ebin/test/ -noinput -s test_runner run_tests
 
 test_shell:
 	@echo Starting a shell with test paths included
@@ -37,7 +37,7 @@ test_shell:
 
 build_tests:
 	@echo Compiling $<
-	@erlc +debug_info -o ebin/tests/ test/*.erl $<
+	erlc +debug_info -o ebin/test/ test/*.erl $<
 
 edoc:		
 	@echo Generating $(APP) documentation from srcs
@@ -51,6 +51,7 @@ start_all:
 
 ebin:
 	@mkdir ebin
+	@mkdir ebin/test
 
 clean:
 	rm -rf ebin/*.beam ebin/erl_crash.dump erl_crash.dump ebin/*.boot ebin/*.rel ebin/*.script doc/*.html doc/*.css doc/erlang.png doc/edoc-info

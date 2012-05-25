@@ -8,3 +8,4 @@ ebin/*.beam
 *.beam
 ebin/*.dump
 deps/
+erl_crash.dump
