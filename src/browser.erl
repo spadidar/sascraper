@@ -1,15 +1,19 @@
 -module(browser).
 
--export([get/1,
-	 post/1,
-	 load/1
+-export([get/1
 	]).
 
-get(Url) ->
-    httpc:request(Url).
+get(Raw_Url) ->
+    Url = prepare_url(Raw_Url),
+    io:format("Getting " ++ Url ++ "~n"),
+    case httpc:request(Url) of 
+	{ok, Result} -> {ok, element(3,Result)};
+	{error, Reason} -> {error, Reason}
+    end.
 
-post(Url) ->
-    ibrowse:send_req(Url, [], get).
+prepare_url(URL) ->
+    case re:run(URL,"http://", [{capture, none}]) of 
+	nomatch -> "http://" ++ URL;
+	match -> URL
+    end.
 
-load(Url) ->
-    ibrowse:send_req(Url, [], get).

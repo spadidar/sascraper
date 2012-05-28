@@ -4,7 +4,14 @@
 run_tests() -> 
     main:start("",""),
     test:passing_test(),
-    scraper_test:test_scrape(),
+    io:format("Testing Scraper ~n"),
+    %% test_scraper(),
+    io:format("Testing Browser ~n"),
+    test_browser(),
+    halt().
+
+test_browser() ->
     browser_test:get_test().
 
-    %% halt().
+test_scraper() ->
+    scraper_test:test_scrape().
