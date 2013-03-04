@@ -1,0 +1,1 @@
+{release, {"scraper", "0.1"}, {erts, "5.9.1"}, [{kernel, "2.15.1"}, {stdlib, "1.18.1"}, {sasl, "2.2.1"}, {scraper, "0.1"}]}.
